@@ -531,6 +531,23 @@ def register_modules():
         logger.error(f"✗ Failed to register feature tools: {e}")
         logger.error(traceback.format_exc())
 
+    # Codebase Intelligence Tools
+    try:
+        from src.mcp_server.features.codebase.codebase_tools import register_codebase_tools
+
+        register_codebase_tools(mcp)
+        modules_registered += 1
+        logger.info("✓ Codebase intelligence tools registered")
+    except ImportError as e:
+        logger.warning(f"⚠ Codebase intelligence module not available (optional): {e}")
+    except (SyntaxError, NameError, AttributeError) as e:
+        logger.error(f"✗ Code error in codebase tools - MUST FIX: {e}")
+        logger.error(traceback.format_exc())
+        raise
+    except Exception as e:
+        logger.error(f"✗ Failed to register codebase tools: {e}")
+        logger.error(traceback.format_exc())
+
     logger.info(f"📦 Total modules registered: {modules_registered}")
 
     if modules_registered == 0:
