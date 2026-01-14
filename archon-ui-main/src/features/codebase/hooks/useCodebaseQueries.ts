@@ -28,8 +28,8 @@ export function useProjectAnalyses(projectId: string | undefined) {
     queryFn: () =>
       projectId ? codebaseService.getProjectAnalyses(projectId) : Promise.reject("No project ID"),
     enabled: !!projectId,
-    staleTime: STALE_TIMES.normal, // 2 minutes (from Archon config)
-    gcTime: STALE_TIMES.long, // 30 minutes
+    staleTime: STALE_TIMES.normal, // 30 seconds
+    gcTime: STALE_TIMES.rare, // 5 minutes
   });
 }
 
@@ -44,7 +44,7 @@ export function useLatestAnalysis(codebasePath: string | undefined) {
       codebasePath ? codebaseService.getLatest(codebasePath) : Promise.reject("No codebase path"),
     enabled: !!codebasePath,
     staleTime: STALE_TIMES.normal,
-    gcTime: STALE_TIMES.long,
+    gcTime: STALE_TIMES.rare,
   });
 }
 
