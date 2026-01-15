@@ -42,6 +42,10 @@ services:
       - ./python/src:/app/src # Mount source code for hot reload
       - ./python/tests:/app/tests # Mount tests for UI test execution
       - ./migration:/app/migration # Mount migration files for version tracking
+      # Codebase Intelligence: Mount host development folder (read-only)
+      # Allows analyzing local codebases from within Docker
+      # Customize CODEBASE_HOST_PATH in .env to change the mounted directory
+      - ${CODEBASE_HOST_PATH:-/Users}:/host-filesystem:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command:

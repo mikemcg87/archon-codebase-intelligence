@@ -75,6 +75,10 @@ def register_codebase_tools(mcp: FastMCP):
             - New team member: get project overview quickly
             - AI context: provide architectural understanding for code generation
             - Documentation: generate architecture docs automatically
+
+        Note: If Archon is running in Docker, it cannot access host filesystem paths.
+        Run the backend locally (`uv run python -m src.server.main`) or mount your
+        development folder as a Docker volume to use this tool.
         """
         try:
             api_url = get_api_url()

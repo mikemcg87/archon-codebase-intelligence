@@ -5,7 +5,6 @@ Provides architectural insights to help AI assistants understand
 brownfield codebases before making modifications.
 """
 
-import ast
 import os
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +16,16 @@ from supabase import Client
 
 class CodebaseService:
     """Service for analyzing codebases and providing architectural insights."""
+
+    def _is_running_in_docker(self) -> bool:
+        """
+        Detect if running inside a Docker container.
+
+        Uses standard Docker detection methods:
+        - /.dockerenv file exists (Docker standard marker)
+        - DOCKER_CONTAINER environment variable set
+        """
+        return os.path.exists("/.dockerenv") or os.getenv("DOCKER_CONTAINER") is not None
 
     def __init__(self, supabase_client: Client):
         """
@@ -48,6 +57,14 @@ class CodebaseService:
         path = Path(codebase_path).resolve()
 
         if not path.exists():
+            if self._is_running_in_docker():
+                raise ValueError(
+                    f"Path not accessible from Docker container: {codebase_path}. "
+                    "The Archon backend is running in Docker and cannot access host filesystem paths directly. "
+                    "Solutions: (1) Use the mounted path instead: /host-filesystem/... "
+                    f"(e.g., /host-filesystem{codebase_path.replace('/Users', '')}), or "
+                    "(2) Run backend locally with `uv run python -m src.server.main`."
+                )
             raise ValueError(f"Path does not exist: {codebase_path}")
 
         if not path.is_dir():
